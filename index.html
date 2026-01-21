@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetZone - Next-Gen V2Ray Infrastructure</title>
+    <meta name="description" content="Experience next-generation V2Ray infrastructure with NetZone. Get free V2Ray configurations.">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="shortcut icon" href="assets/images/logo.png">
+
+    <style>
+        /* Homepage Specific Styles */
+        .hero { position: relative; min-height: 90vh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--bg-primary); padding: 2rem 1rem; }
+        .animated-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 0; opacity: 0.6; }
+        
+        .grid-line { position: absolute; background: var(--accent); opacity: 0.08; }
+        .grid-line.horizontal { width: 100%; height: 1px; animation: slideRight 15s linear infinite; }
+        .grid-line.vertical { width: 1px; height: 100%; animation: slideDown 20s linear infinite; }
+        @keyframes slideRight { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
+
+        .floating-particle { position: absolute; width: 3px; height: 3px; background: var(--accent); border-radius: 50%; opacity: 0.4; animation: float 8s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(50px, -50px); } 50% { transform: translate(-30px, -80px); } 75% { transform: translate(30px, -40px); } }
+
+        .hero-content { position: relative; z-index: 1; text-align: center; max-width: 800px; padding: 1rem; }
+        .hero-badge { display: inline-block; padding: 0.4rem 1.2rem; background: rgba(33, 242, 255, 0.1); border: 1px solid var(--accent); border-radius: 50px; color: var(--accent); font-size: 0.75rem; font-weight: 600; margin-bottom: 1.5rem; }
+        .hero h1 { font-size: 2.8rem; font-weight: 800; margin-bottom: 1.2rem; background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero-subtitle { font-size: 1.05rem; color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.7; }
+        
+        .btn { padding: 0.8rem 2rem; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: none; transition: all 0.3s; }
+        .btn-primary { background: var(--accent); color: var(--bg-primary); box-shadow: 0 4px 20px var(--accent-glow); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 6px 30px var(--accent-glow); }
+        .btn-secondary { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+        .btn-secondary:hover { background: rgba(33, 242, 255, 0.1); transform: translateY(-3px); }
+
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 700px; margin: 0 auto; }
+        .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--accent); display: block; }
+        .stat-label { color: var(--text-secondary); font-size: 0.85rem; }
+
+        /* V2Ray Section */
+        .v2ray-section { padding: 4rem 1.5rem; max-width: 1200px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-title { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.8rem; color: var(--text-primary); }
+        .section-subtitle { font-size: 1rem; color: var(--text-secondary); }
+        
+        .v2ray-selector-container { max-width: 800px; margin: 0 auto; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border); padding: 2rem; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); }
+        .search-box input { width: 100%; padding: 0.9rem 0.9rem 0.9rem 2.8rem; background: var(--bg-secondary); border: 2px solid var(--border); border-radius: 10px; color: var(--text-primary); }
+        .search-box i { position: absolute; left: 2.5rem; margin-top: 1rem; color: var(--accent); } 
+        
+        .dropdown-list { max-height: 400px; overflow-y: auto; border-radius: 10px; background: var(--bg-secondary); margin-top: 1rem; }
+        .dropdown-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; cursor: pointer; border-bottom: 1px solid var(--border); }
+        .dropdown-item:hover { background: var(--bg-card); }
+        .dropdown-item img { width: 45px; height: 45px; object-fit: contain; border-radius: 8px; }
+        .dropdown-item-name { font-weight: 600; color: var(--text-primary); }
+        
+        .v2ray-output { margin-top: 1.5rem; display: none; }
+        .v2ray-output.active { display: block; animation: fadeInUp 0.5s ease; }
+        .v2ray-config-box { background: var(--bg-primary); border: 2px solid var(--accent); border-radius: 10px; padding: 1.2rem; margin-bottom: 1rem; }
+        .config-text { font-family: 'Courier New', monospace; color: var(--text-secondary); word-break: break-all; font-size: 0.85rem; }
+        .copy-button { width: 100%; padding: 0.9rem; background: var(--accent); color: var(--bg-primary); border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
+
+        /* Apps Grid */
+        .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
+        .app-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1.8rem; text-align: center; position: relative; overflow: hidden; transition: 0.3s; }
+        .app-card:hover { transform: translateY(-8px); border-color: var(--accent); }
+        .app-icon { width: 70px; height: 70px; object-fit: contain; margin-bottom: 1.2rem; }
+        .download-btn { width: 100%; padding: 0.8rem; background: var(--accent); color: var(--bg-primary); border-radius: 10px; font-weight: 600; display: inline-flex; justify-content: center; margin-top: 1rem; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.9rem; }
+            .stats { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader-container">
+            <img src="assets/images/logo.png" alt="Netzone" class="loader-logo" onerror="this.style.display='none'">
+            <div class="loader-ring"></div>
+            <div class="loader-ring"></div>
+            <div class="loader-ring"></div>
+        </div>
+        <div class="loading-text">NETZONE</div>
+    </div>
+
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="window.location.href='index.html'">
+                <img src="assets/images/logo.png" alt="Netzone" onerror="this.style.display='none'">
+                <span class="logo-text">NETZONE</span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="javascript:void(0)" onclick="navigateToSection('free-v2ray')"><i class="fa-solid fa-shield"></i> Free V2Ray</a></li>
+                <li><a href="javascript:void(0)" onclick="navigateToSection('apps')"><i class="fa-solid fa-download"></i> Apps</a></li>
+                <li><a href="contact.html"><i class="fa-solid fa-address-book"></i> Contact</a></li>
+            </ul>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="animated-bg">
+                <div class="grid-line horizontal" style="top: 20%;"></div>
+                <div class="grid-line vertical" style="left: 20%;"></div>
+                <div class="floating-particle" style="top: 10%; left: 15%;"></div>
+            </div>
+
+            <div class="hero-content">
+                <div class="hero-badge fade-in">NETZONE HOSTING™ - SENU MODZ</div>
+                <h1 class="fade-in">Next-Gen V2Ray Infrastructure</h1>
+                <p class="hero-subtitle fade-in">The Future of Secure Internet Starts Here. Experience next-generation performance with our V2Ray platform.</p>
+
+                <div class="hero-cta fade-in">
+                    <a href="javascript:void(0)" onclick="navigateToSection('free-v2ray')" class="btn btn-primary">
+                        <i class="fa-solid fa-rocket"></i> Explore Free V2Ray
+                    </a>
+                    <a href="contact.html" class="btn btn-secondary">
+                        <i class="fa-solid fa-headset"></i> Get Support
+                    </a>
+                </div>
+
+                <div class="stats fade-in">
+                    <div class="stat-item"><span class="stat-value">99.99%</span><span class="stat-label">Uptime SLA</span></div>
+                    <div class="stat-item"><span class="stat-value">100% Free</span><span class="stat-label">Paid Service Included</span></div>
+                    <div class="stat-item"><span class="stat-value">24/7</span><span class="stat-label">Expert Support</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="free-v2ray" class="v2ray-section">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Free V2Ray Configurations</h2>
+                <p class="section-subtitle">Select from our curated list of high-performance V2Ray configs optimized for Sri Lankan ISPs</p>
+            </div>
+
+            <div class="v2ray-selector-container slide-in-left">
+                <div class="selector-header">
+                    <h3>Choose Your Configuration</h3>
+                </div>
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Search for V2Ray config (e.g., Dialog, SLT...)">
+                </div>
+
+                <div class="dropdown-list" id="dropdownList">
+                    </div>
+
+                <div class="v2ray-output" id="v2rayOutput">
+                    <div class="v2ray-config-box">
+                        <div class="config-label">Selected Configuration</div>
+                        <div class="config-text" id="configText"></div>
+                    </div>
+                    <button class="copy-button" onclick="copyConfig()">
+                        <i class="fa-solid fa-copy"></i> Copy Configuration
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="apps" class="v2ray-section">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Supported Applications</h2>
+                <p class="section-subtitle">Download the best V2Ray clients for your platform</p>
+            </div>
+            <div class="apps-grid" id="appsGrid">
+                </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <span class="footer-logo-text">NETZONE</span>
+                </div>
+                <p>Next-generation V2Ray infrastructure powered by cutting-edge technology.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Community</h3>
+                <ul class="footer-links">
+                    <li><a href="https://chat.whatsapp.com/Hre9DcY71UvC32oMVwwUrE" target="_blank">WhatsApp Group</a></li>
+                    <li><a href="https://discord.gg/DhPZ8uMv4v" target="_blank">Discord Server</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 NetZone. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Core Logic
+        let v2rayConfigs = [];
+        let selectedConfig = null;
+
+        async function loadV2Rays() {
+            try {
+                // Changed from Flask url_for to direct path
+                const response = await fetch('data/free_v2rays.json');
+                const data = await response.json();
+                v2rayConfigs = data.vpn_configs;
+                displayConfigs(v2rayConfigs);
+            } catch (error) {
+                console.error('Error loading V2Ray configs:', error);
+                document.getElementById('dropdownList').innerHTML = '<div style="padding: 2rem;">Failed to load configurations.</div>';
+            }
+        }
+
+        function displayConfigs(configs) {
+            const dropdown = document.getElementById('dropdownList');
+            if (configs.length === 0) {
+                dropdown.innerHTML = '<div style="padding: 2rem;">No configurations found.</div>';
+                return;
+            }
+            dropdown.innerHTML = configs.map(config => `
+                <div class="dropdown-item" onclick='selectConfig(${JSON.stringify(config).replace(/'/g, "&#39;")})'>
+                    <img src="${config.icon || 'assets/images/logo.png'}" onerror="this.src='assets/images/logo.png'" alt="${config.name}">
+                    <div class="dropdown-item-text">
+                        <div class="dropdown-item-name">${config.name}</div>
+                        <div class="dropdown-item-desc" style="color:#888; font-size:0.8rem">Click to select</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadApps() {
+            try {
+                const response = await fetch('data/apps.json');
+                const data = await response.json();
+                document.getElementById('appsGrid').innerHTML = data.apps.map(app => `
+                    <div class="app-card fade-in">
+                        <img src="${app.icon || 'assets/images/logo.png'}" class="app-icon" onerror="this.src='assets/images/logo.png'">
+                        <div class="app-name" style="font-weight:bold; margin-bottom:5px;">${app.name}</div>
+                        <div class="app-platform" style="color:var(--accent); font-size:0.8rem; margin-bottom:10px;">${app.platform}</div>
+                        <a href="${app.url}" target="_blank" class="download-btn">Download</a>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function selectConfig(config) {
+            selectedConfig = config.v2ray;
+            document.getElementById('configText').textContent = selectedConfig;
+            document.getElementById('v2rayOutput').classList.add('active');
+            document.getElementById('v2rayOutput').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function copyConfig() {
+            if (selectedConfig) {
+                navigator.clipboard.writeText(selectedConfig).then(() => {
+                    const btn = document.querySelector('.copy-button');
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                    btn.style.background = '#00d47e';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = '';
+                    }, 2500);
+                });
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = v2rayConfigs.filter(c => c.name.toLowerCase().includes(term));
+            displayConfigs(filtered);
+        });
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            loadV2Rays();
+            loadApps();
+            // Animation Observer
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+            });
+            document.querySelectorAll('.fade-in, .slide-in-left').forEach(el => observer.observe(el));
+        });
+
+        // Loading Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loading-screen').classList.add('hidden');
+                document.getElementById('navbar').classList.add('loaded');
+            }, 800);
+        });
+        
+        // Navigation Helper
+        function navigateToSection(id) {
+            if(window.location.pathname.includes('contact.html')) {
+                window.location.href = 'index.html#' + id;
+            } else {
+                document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            }
+            closeMobileMenu();
+        }
+
+        // Mobile Menu
+        function toggleMobileMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+            document.getElementById('mobileOverlay').classList.toggle('active');
+        }
+        function closeMobileMenu() {
+            document.getElementById('navLinks').classList.remove('active');
+            document.getElementById('mobileOverlay').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
