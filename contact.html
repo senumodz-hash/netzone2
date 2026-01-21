@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - NetZone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="shortcut icon" href="assets/images/logo.png">
+    <style>
+        .contact-hero { min-height: 60vh; display: flex; justify-content: center; align-items: center; text-align: center; background: var(--gradient-1); position: relative; padding: 3rem 1rem; }
+        .contact-hero h1 { font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .contact-hero p { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 1rem auto; }
+        .contact-container { max-width: 1200px; margin: -4rem auto 2rem; padding: 0 2rem; position: relative; z-index: 10; }
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .contact-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; text-align: center; transition: all 0.3s; }
+        .contact-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .contact-icon-wrapper { width: 70px; height: 70px; background: rgba(33, 242, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 1.8rem; color: var(--accent); }
+        .contact-link { display: inline-flex; align-items: center; gap: 10px; padding: 0.9rem 2rem; border-radius: 10px; text-decoration: none; color: white; font-weight: 600; margin-top: 1.5rem; }
+        .whatsapp-link { background: #25D366; }
+        .discord-link { background: #5865F2; }
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader-container">
+            <div class="loader-ring"></div>
+        </div>
+    </div>
+
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="window.location.href='index.html'">
+                <span class="logo-text">NETZONE</span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="index.html#free-v2ray"><i class="fa-solid fa-shield"></i> Free V2Ray</a></li>
+                <li><a href="index.html#apps"><i class="fa-solid fa-download"></i> Apps</a></li>
+                <li><a href="contact.html"><i class="fa-solid fa-address-book"></i> Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section class="contact-hero fade-in">
+            <div style="z-index: 2;">
+                <h1>Get In Touch</h1>
+                <p>Join our thriving community. Get instant support, share experiences, and stay updated.</p>
+            </div>
+        </section>
+
+        <div class="contact-container">
+            <div class="contact-grid">
+                <div class="contact-card slide-in-left">
+                    <div class="contact-icon-wrapper"><i class="fa-brands fa-whatsapp"></i></div>
+                    <h2>WhatsApp Community</h2>
+                    <p>Join our active WhatsApp group for instant updates and support.</p>
+                    <a href="https://chat.whatsapp.com/Hre9DcY71UvC32oMVwwUrE" target="_blank" class="contact-link whatsapp-link">Join WhatsApp</a>
+                </div>
+
+                <div class="contact-card slide-in-right">
+                    <div class="contact-icon-wrapper"><i class="fa-brands fa-discord"></i></div>
+                    <h2>Discord Server</h2>
+                    <p>Be part of our Discord community with organized channels.</p>
+                    <a href="https://discord.gg/DhPZ8uMv4v" target="_blank" class="contact-link discord-link">Join Discord</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="footer-logo-text">NETZONE</span>
+                <p>Next-generation V2Ray infrastructure.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 NetZone. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loading-screen').classList.add('hidden');
+                document.getElementById('navbar').classList.add('loaded');
+            }, 500);
+        });
+        
+        // Simple animation trigger
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+        });
+        document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
