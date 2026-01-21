@@ -183,7 +183,8 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <div class="footer-logo">
-                    <span class="footer-logo-text">NETZONE</span>
+                    <img src="assets/images/logo.png" style="height:45px;" onerror="this.style.display='none'" alt="NetZone">
+                    <span class="footer-logo-text" style="margin-left:10px;">NETZONE</span>
                 </div>
                 <p>Next-generation V2Ray infrastructure powered by cutting-edge technology.</p>
             </div>
@@ -214,7 +215,6 @@
 
         async function loadV2Rays() {
             try {
-                // Changed from Flask url_for to direct path
                 const response = await fetch('data/free_v2rays.json');
                 const data = await response.json();
                 v2rayConfigs = data.vpn_configs;
@@ -225,6 +225,7 @@
             }
         }
 
+        // Corrected path logic: Prepends 'assets/' to the image path from JSON
         function displayConfigs(configs) {
             const dropdown = document.getElementById('dropdownList');
             if (configs.length === 0) {
@@ -233,7 +234,7 @@
             }
             dropdown.innerHTML = configs.map(config => `
                 <div class="dropdown-item" onclick='selectConfig(${JSON.stringify(config).replace(/'/g, "&#39;")})'>
-                    <img src="${config.icon || 'assets/images/logo.png'}" onerror="this.src='assets/images/logo.png'" alt="${config.name}">
+                    <img src="assets/${config.icon}" onerror="this.src='assets/images/logo.png'" alt="${config.name}">
                     <div class="dropdown-item-text">
                         <div class="dropdown-item-name">${config.name}</div>
                         <div class="dropdown-item-desc" style="color:#888; font-size:0.8rem">Click to select</div>
@@ -242,13 +243,14 @@
             `).join('');
         }
 
+        // Corrected path logic for Apps as well
         async function loadApps() {
             try {
                 const response = await fetch('data/apps.json');
                 const data = await response.json();
                 document.getElementById('appsGrid').innerHTML = data.apps.map(app => `
                     <div class="app-card fade-in">
-                        <img src="${app.icon || 'assets/images/logo.png'}" class="app-icon" onerror="this.src='assets/images/logo.png'">
+                        <img src="assets/${app.icon}" class="app-icon" onerror="this.src='assets/images/logo.png'">
                         <div class="app-name" style="font-weight:bold; margin-bottom:5px;">${app.name}</div>
                         <div class="app-platform" style="color:var(--accent); font-size:0.8rem; margin-bottom:10px;">${app.platform}</div>
                         <a href="${app.url}" target="_blank" class="download-btn">Download</a>
@@ -291,6 +293,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadV2Rays();
             loadApps();
+            
             // Animation Observer
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
